@@ -7,6 +7,8 @@ Singleton.prototype.getName = function () {
     return this.name
 }
 
+/// instance of if(thsi.instance){ this.instance = new Singleton(name)}
+
 function getInstance(name) {
     if (!this.instance) {
         this.instance = new Singleton(name)

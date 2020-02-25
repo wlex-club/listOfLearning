@@ -40,11 +40,12 @@ a.getName()
 
 
 // 通过构造函数
-var M = function(name){
+var M = function (name) {
     this.name = name
 }
 var o3 = new M('o3')
 
 console.log(o3.__proto__) // object
 console.log(o3.prototype) // undefined
+
 
