@@ -1,75 +1,28 @@
-/// bind commit and dispatch to self
-const store = this
+/**
+ * 选择排序是一种简单的直观的排序算法，无论什么数据进去时间复杂度都是O(n2)，
+ * 1.算法步骤：首先在未排序序列中找到最小（大）元素，存放到排序序列的起始位置
+ * 2.再从剩余未排序元素中继续寻找最小（大）元素，然后放到已排序序列的末尾
+ * 3.重复第二步，直到所有元素均排序完毕
+ * **/
 
-const {dispatch, commit} = this
-
-this.dispatch = function boundDispatch(type, payload) {
-    return dispatch.call(store, type, payload)
-}
-
-this.commit = function boundCommit(type, payload, options) {
-    return commit.call(store, type, payload, options)
-}
-
-let hidemodel = function (sex, clo) {
-    this.sex = sex
-    this.clo = clo
-}
-
-hidemodel.prototype.wearclo = function () {
-    console.log(this.sex + 'shichaun' + this.clo)
-}
-
-for (let i = 0; i < 100; i++) {
-    let model = new hidemodel('male', 'di' + i + 'nanzhuang')
-    model.wearclo()
-}
-
-/// 享元模式则只需要男女各一名，试穿所有的衣服
-
-var HireModel = function (sex) {
-    this.sex = sex
-}
-
-HireModel.prototype.wearClothes = function (clothes) {
-    console.log(this.sex + "wear" + clothes)
-}
-
-var ModelFactory = (function () {
-    var cacheObj = {}
-    return {
-        create: function (sex) {
-            if (cacheObj[sex]) {
-                return cacheObj[sex]
-            } else {
-                cacheObj[sex] = new HireModel(sex)
-                return cacheObj[sex]
+function selectionSort(arr) {
+    var len = arr.length;
+    var minIndex, temp;
+    for (var i = 0; i < len - 1; i++) {
+        minIndex = i;
+        for (var j = i + 1; j < len; j++) {
+            if (arr[j] < arr[minIndex]) {     // 寻找最小的数
+                minIndex = j;                 // 将最小数的索引保存
             }
         }
+        temp = arr[i];
+        arr[i] = arr[minIndex];
+        arr[minIndex] = temp;
     }
-})()
-/// 管理
-var ModelManager = (function () {
-    var vessel = {}
-    return {
-        add: function (sex, clothes, id) {
-            var model = ModelFactory.create(sex)
-            vessel[id] = {
-                model: model,
-                clothes: clothes
-            }
-        },
-        wear:function () {
-            for(var key in vessel){
-                vessel[key]['model'].wearClothes(vessel[key]['clothes'])
-            }
-        }
-    }
-})()
-
-for(var i=0;i<100;i++){
-    ModelManager.add('male','第'+i+'款男衣服',i);
-    ModelManager.add('female','第'+i+'款女衣服',i);
+    return arr;
 }
-ModelManager.wear();
 
+// let arr = [3, 44, 38, 5, 47, 15, 36, 26, 27, 19]
+let arr = [44, 38]
+
+console.log(selectionSort(arr))
