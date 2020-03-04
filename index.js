@@ -1,28 +1,109 @@
-/**
- * 选择排序是一种简单的直观的排序算法，无论什么数据进去时间复杂度都是O(n2)，
- * 1.算法步骤：首先在未排序序列中找到最小（大）元素，存放到排序序列的起始位置
- * 2.再从剩余未排序元素中继续寻找最小（大）元素，然后放到已排序序列的末尾
- * 3.重复第二步，直到所有元素均排序完毕
- * **/
+(function (window, undefined) {
+    var taskList = []
 
-function selectionSort(arr) {
-    var len = arr.length;
-    var minIndex, temp;
-    for (var i = 0; i < len - 1; i++) {
-        minIndex = i;
-        for (var j = i + 1; j < len; j++) {
-            if (arr[j] < arr[minIndex]) {     // 寻找最小的数
-                minIndex = j;                 // 将最小数的索引保存
-            }
-        }
-        temp = arr[i];
-        arr[i] = arr[minIndex];
-        arr[minIndex] = temp;
+    function LazyMan() {
     }
-    return arr;
-}
 
-// let arr = [3, 44, 38, 5, 47, 15, 36, 26, 27, 19]
-let arr = [44, 38]
+    LazyMan.prototype.eat = function (str) {
+        subscribe("eat", str);
+        return this;
+    };
+    LazyMan.prototype.sleep = function (num) {
+        subscribe("sleep", num);
+        return this;
+    };
 
-console.log(selectionSort(arr))
+    LazyMan.prototype.sleepFirst = function (num) {
+        subscribe("sleepFirst", num);
+        return this;
+    };
+
+    function subsribe() {
+        var param = {}
+        var args = Array.prototype.slice.call(arguments)
+
+        if (args.length < 1) {
+            throw new Erroe('subscribe参数不能为空')
+        }
+
+        param.msg = param[0]
+        param.args = args.slice(1)
+        if (param.msg === "sleepFirst") {
+            taskList.unshift(param)
+        } else {
+            taskList.push(param)
+        }
+    }
+
+// 发布
+    function publish() {
+        if (taskList.length > 0) {
+            run(taskList.shift())
+        }
+    }
+
+    function run(options) {
+        let msg = options.msg
+        let args = options.args
+
+        switch (msg) {
+            case "lazyMan":
+                lazyMan.apply(null, args);
+                break;
+            case "eat":
+                eat.apply(null, args);
+                break;
+            case "sleep":
+                sleep.apply(null, args);
+                break;
+            case "sleepFirst":
+                sleepFirst.apply(null, args);
+                break;
+            default:
+                ;
+        }
+
+        // 具体方法
+        function lazyMan(str) {
+            lazyManLog("Hi!This is " + str + "!");
+
+            publish();
+        }
+
+        function eat(str) {
+            lazyManLog("Eat " + str + "~");
+            publish();
+        }
+
+        function sleep(num) {
+            setTimeout(function () {
+                lazyManLog("Wake up after " + num);
+
+                publish();
+            }, num * 1000);
+
+        }
+
+        function sleepFirst(num) {
+            setTimeout(function () {
+                lazyManLog("Wake up after " + num);
+
+                publish();
+            }, num * 1000);
+        }
+
+        // 输出文字
+        function lazyManLog(str) {
+            console.log(str);
+        }
+
+        // 暴露接口
+        window.LazyMan = function (str) {
+            subscribe("lazyMan", str);
+            setTimeout(function () {
+                publish();
+            }, 0);
+            return new LazyMan();
+        };
+    }
+})(window)
